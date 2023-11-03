@@ -1,0 +1,193 @@
+{% extends 'shop/basic.html' %}
+{% block titles %}
+E-cart.com
+{% endblock %}
+
+{% block css %}
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed&display=swap');
+.col-md-3 {
+display: inline-block;
+margin-left: -4px;
+margin-right: 1rem;
+/* box-shadow: 2px 2px 5px 2px grey !important; */
+}
+.container-fluid{
+background-color: #EDEDED;
+}
+.col-md-3 img{
+width: auto;
+height: 200px;
+}
+body .carousel-indicator li{
+background-color: grey;
+}
+body.carousel-indicator .active{
+background-color: grey;
+}
+body .carousel-indicators{
+bottom: 0;
+}
+body .carousel-control-prev-icon,
+body .carousel-control-next-icon{
+background-color: grey;
+}
+body .no-padding{
+padding-left: 0;
+padding-right: 0;
+font-family: 'Roboto Condensed', sans-serif;
+}
+.btn{
+background-color: rgb(90, 221, 90);
+border:none;
+border-radius: 0px;
+}
+.btn:hover{
+background-color: limegreen !important;
+box-shadow: 0px 0px 5px 3px;
+}
+h2{
+color: #323232;
+margin-bottom: 1rem;
+}
+
+h1{
+  color: #323232;
+  
+  margin-bottom: 1rem;
+  }
+  
+.card{
+box-shadow: 0px 0px 6px 1px grey;
+background-color:#FBFFF7;
+}
+body{
+background-color: #EDEDED;
+}
+.banner{
+  margin-top: 3%;
+}
+{% endblock %}
+
+
+
+{% block body %}
+
+{% load static %}
+<div class="container banner">
+  <img src="/static/shop/banner.jpg" class="img-fluid" alt="...">
+
+</div>
+
+<div class="container-fluid">
+  <div class="container">
+    {% if username != "" and username != "name" %}
+  <h1 class="mx-auto my-3">Welcome {{username}}!</h1>
+  {% endif %}
+</div>
+  <!--       <div class="carousel-item active"-->
+  {% for product, range, nslides in allProds %}
+  <div class="container">
+
+  <h2 class="mx-auto my-3">{{product.0.category}}</h2>
+  </div>
+  <div class="row">
+    <div id="demo{{forloop.counter}}" class="col carousel slide my-3" data-ride="carousel">
+      <ul class="carousel-indicators">
+        <li data-target="#demo{{forloop.counter}}" data-slide-to="0" class="active"></li>
+        {% for i in range %}
+        <li data-target="#demo{{forloop.parentloop.counter}}" data-slide-to="{{i}}"></li>
+        {% endfor %}
+      </ul>
+
+      <!--Slideshow starts here -->
+      <div class="container carousel-inner no-padding">
+        <div class="carousel-item active">
+          {% for i in product %}
+          <div class="col-xs-3 col-sm-3 col-md-3">
+            <div class="card my-3" style="width: 18rem;">
+              <img src="/media/{{i.image}}" class="card-img-top" alt="...">
+              <div class="card-body">
+                <h5 class="card-title" id="namepr{{i.id}}">{{i.product_name}}</h5>
+                <h6>{{i.desc}}</h6>
+                <h4>Rs. {{i.price}}/-</h4>
+                <h5>Rating: {{i.rating}}</i> </h5>
+                <span id="divpr{{i.id}}" class="divpr">
+                  <a href="#" id="pr{{i.id}}" class="btn cart"><i class="fa fa-cart-plus" aria-hidden="true"></i> Add to
+                    cart</a>
+                </span>
+                <a href="/shop/products/{{i.id}}"><button id="{{i.id}}" class="btn cart"><i class="fa fa-eye"
+                      aria-hidden="true"></i> Quick View</button></a>
+              </div>
+            </div>
+          </div>
+          {% if forloop.counter|divisibleby:3 and forloop.counter > 0 and not forloop.last %}
+        </div>
+        <div class="carousel-item">
+          {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+      <a class="carousel-control-prev" href="#demo{{forloop.counter}}" data-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+      </a>
+      <a class="carousel-control-next" href="#demo{{forloop.counter}}" data-slide="next">
+        <span class="carousel-control-next-icon"></span>
+      </a>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% if ordered_pro_history|length > 0 %}
+<div class="container">
+  <h2> Previously Purchased Items </h2>
+</div>
+<div class="container carousel-inner no-padding">
+  <div class="carousel-item active">
+    {% for prods in ordered_pro_history %}
+
+    {% for i in prods %}
+    <div class="col-xs-3 col-sm-3 col-md-3">
+      <div class="card my-3" style="width: 18rem;">
+        <img src="/media/{{i.image}}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title" id="namepr{{i.id}}">{{i.0.product_name}}</h5>
+          <h6>{{i.desc}}</h6>
+          <h4>Rs. {{i.price}}/-</h4>
+          <h5>Rating: {{i.rating}}</i> </h5>
+          <span id="divpr{{i.id}}" class="divpr">
+            <a href="#" id="pr{{i.id}}" class="btn cart"><i class="fa fa-cart-plus" aria-hidden="true"></i> Add to
+              cart</a>
+          </span>
+          <a href="/shop/products/{{i.id}}"><button id="{{i.id}}" class="btn cart"><i class="fa fa-eye"
+                aria-hidden="true"></i> Quick View</button></a>
+        </div>
+      </div>
+    </div>
+    {% if forloop.counter|divisibleby:3 and forloop.counter > 0 and not forloop.last %}
+  </div>
+  <div class="carousel-item">
+    {% endif %}
+    {% endfor %}
+    {% endfor %}
+  </div>
+</div>
+{% endif%}
+
+{% endblock %}
+
+
+{% block js %}
+<script>
+  const divpr = document.getElementsByClassName("divpr")
+
+  console.log(divpr, divpr.length);
+  for (i = 0; i <= divpr.length - 1; i++) {
+    divpr[i].addEventListener("click", function (item) {
+      console.log(item.target.id, item.target.parentNode.parentNode.childNodes[0].nextSibling.innerHTML);
+      localStorage.setItem("product_name", item.target.parentNode.parentNode.childNodes[0].nextSibling.innerHTML);
+    })
+
+  }
+</script>
+{% endblock %}
